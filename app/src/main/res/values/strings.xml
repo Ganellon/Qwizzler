@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">DynamicQuiz</string>
+    <string name="edit_text_hint">Enter your answer here</string>
+    <string name="score_button_text">Get Your Score</string>
+    <string name="check_answer_button_text">Check Answer</string>
+    <string name="get_hint_button_text">Get Hint</string>
+    <string name="previous_button_text">Previous</string>
+    <string name="next_button_text">Next</string>
+</resources>
