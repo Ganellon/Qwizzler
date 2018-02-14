@@ -5,6 +5,7 @@ import android.os.Parcelable;
 
 /**
  * Created by drew on 2/6/18.
+ * This is Select One (radio button) type
  */
 
 class SelectOne extends Question implements Parcelable{
@@ -16,7 +17,7 @@ class SelectOne extends Question implements Parcelable{
   }
 
 
-  protected SelectOne(Parcel in) {
+  private SelectOne(Parcel in) {
     super(in);
   }
 

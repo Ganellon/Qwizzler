@@ -1,6 +1,5 @@
 package cloud.workingtitle.qwizzler;
 
-import android.location.Address;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -9,6 +8,7 @@ import java.util.ArrayList;
 
 /**
  * Created by drew on 2/11/18.
+ * This is the abstract Question class from which all concrete questions are derived
  */
 
 abstract class Question implements Parcelable {
@@ -56,36 +56,36 @@ abstract class Question implements Parcelable {
     }
   };*/
 
-  public void setAnsweredCorrectly(boolean answeredCorrectly) {
+  void setAnsweredCorrectly(boolean answeredCorrectly) {
     mAnsweredCorrectly = answeredCorrectly;
     mIsAnswered = true;
   }
 
-  public boolean getAnsweredCorrectly() {
+  boolean getAnsweredCorrectly() {
     return mAnsweredCorrectly;
   }
 
-  public boolean isAnswered() {
+  boolean isAnswered() {
     return mIsAnswered;
   }
 
-  public Class getControlType() {
+  Class getControlType() {
     return this.mControlType;
   }
 
-  public Class getParentType() {
+  Class getParentType() {
     return this.mParentType;
   }
 
-  public void setControlType(Class controlType) {
+  void setControlType(Class controlType) {
     mControlType = controlType;
   }
 
-  public void setParentType(Class parentType) {
+  void setParentType(Class parentType) {
     mParentType = parentType;
   }
 
-  public String getQuestionText() {
+  String getQuestionText() {
     return mQuestionText;
   }
 
@@ -98,7 +98,7 @@ abstract class Question implements Parcelable {
     mChoices.add(choice);
   }
 
-  public ArrayList<Choice> getChoices() {
+  ArrayList<Choice> getChoices() {
     return mChoices;
   }
 
@@ -132,11 +132,11 @@ abstract class Question implements Parcelable {
     }
 
 
-    public void choose() {
+    void choose() {
       mWasChosen = true;
     }
 
-    public boolean wasPreviouslyChosen() {
+    boolean wasPreviouslyChosen() {
       return mWasChosen;
     }
 
@@ -144,11 +144,11 @@ abstract class Question implements Parcelable {
       return mChoiceText;
     }
 
-    public boolean isCorrect() {
+    boolean isCorrect() {
       return mIsCorrect;
     }
 
-    public static final Creator<Choice> CREATOR = new Creator<Choice>() {
+    static final Creator<Choice> CREATOR = new Creator<Choice>() {
       @Override
       public Choice createFromParcel(Parcel in) {
         return new Choice(in);
@@ -171,17 +171,6 @@ abstract class Question implements Parcelable {
       dest.writeByte((byte) (mIsCorrect ? 1 : 0));
       dest.writeByte((byte) (mWasChosen ? 1 : 0));
     }
-
-/*
-    // De-parcel object
-    private ContactInfo(Parcel in) {
-      name = in.readString();
-      surname = in.readString();
-      idx = in.readInt();
-
-      address = Address.CREATOR.createFromParcel(in);
-      }
-*/
 
   }
 }

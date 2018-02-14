@@ -4,13 +4,14 @@ import android.os.Parcel;
 
 /**
  * Created by drew on 2/11/18.
+ * This is a ShortAnswer type
  */
 
 class ShortAnswer extends Question {
 
   private String mProvidedAnswer;
 
-  protected ShortAnswer (Parcel in) {
+  private ShortAnswer (Parcel in) {
     super(in);
     mProvidedAnswer = in.readString();
   }
@@ -28,12 +29,12 @@ class ShortAnswer extends Question {
     super.addChoice(choiceText, true);
   }
 
-  public void setAnsweredCorrectly(boolean answeredCorrectly, String textAnswer) {
+  void setAnsweredCorrectly(boolean answeredCorrectly, String textAnswer) {
     super.setAnsweredCorrectly(answeredCorrectly);
     this.mProvidedAnswer = textAnswer;
   }
 
-  public String getProvidedAnswer() {
+  String getProvidedAnswer() {
     return mProvidedAnswer;
   }
 
@@ -58,6 +59,4 @@ class ShortAnswer extends Question {
       return new ShortAnswer[size];
     }
   };
-
-
 }

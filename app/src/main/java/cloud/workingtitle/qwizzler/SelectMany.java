@@ -5,6 +5,7 @@ import android.os.Parcelable;
 
 /**
  * Created by drew on 2/11/18.
+ * This is a SelectMany (checkbox) type
  */
 
 class SelectMany extends Question implements Parcelable{
@@ -15,7 +16,7 @@ class SelectMany extends Question implements Parcelable{
     setParentType(android.widget.LinearLayout.class);
   }
 
-  protected SelectMany(Parcel in) {
+  private SelectMany(Parcel in) {
     super(in);
   }
 

@@ -5,6 +5,7 @@ import android.util.Log;
 
 /**
  * Created by drew on 2/11/18.
+ * This is a TrueFalse type
  */
 
 class TrueFalse extends Question {
@@ -22,7 +23,7 @@ class TrueFalse extends Question {
     this.addChoice(isCorrect);
   }
 
-  protected TrueFalse (Parcel in) {
+  private TrueFalse (Parcel in) {
     super(in);
   }
 
