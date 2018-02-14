@@ -1,13 +1,11 @@
 package cloud.workingtitle.qwizzler;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.view.GestureDetectorCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.GestureDetector;
 import android.view.Gravity;
 import android.view.MotionEvent;
@@ -21,6 +19,7 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -101,7 +100,7 @@ public class QuizActivity extends AppCompatActivity {
         updateDisplay();
       }
     });
-    
+
 
     get_score_button.setOnClickListener(new View.OnClickListener() {
       @Override
@@ -293,6 +292,48 @@ public class QuizActivity extends AppCompatActivity {
     return (int) (desiredDP * scale + 0.5f);
   }
 
+  @NonNull
+  private ViewGroup createParent(Question question) {
+    // The parent View will always be some type of Linear Layout; set that as the default to avoid
+    // potentially returning a null value
+    ViewGroup viewGroup = new LinearLayout(this);
+    try {
+      Class<?> parentClass = question.getParentType();
+      Constructor<?> cons = parentClass.getConstructor(Context.class);
+      viewGroup = (ViewGroup)cons.newInstance(this);
+      viewGroup.setLayoutParams(getMatchParentLayoutParams());
+      ((LinearLayout)viewGroup).setOrientation(LinearLayout.VERTICAL);
+    } catch (NoSuchMethodException e) {
+      e.printStackTrace();
+    } catch (InstantiationException e) {
+      e.printStackTrace();
+    } catch (IllegalAccessException e) {
+      e.printStackTrace();
+    } catch (InvocationTargetException e) {
+      e.printStackTrace();
+    }
+    return viewGroup;
+  }
+
+  @NonNull
+  private TextView createChild(Question question) {
+    TextView textView = new TextView(this);
+    try {
+      Class<?> childClass = question.getControlType();
+      Constructor<?> cons = childClass.getConstructor(Context.class);
+      textView = (TextView)cons.newInstance(this);
+    } catch (NoSuchMethodException e) {
+      e.printStackTrace();
+    } catch (IllegalAccessException e) {
+      e.printStackTrace();
+    } catch (InstantiationException e) {
+      e.printStackTrace();
+    } catch (InvocationTargetException e) {
+      e.printStackTrace();
+    }
+    return textView;
+  }
+
   // Display the question and all of the answer choices on the screen
   private void displayQuestion(Question question)
       throws NoSuchMethodException,
@@ -300,18 +341,14 @@ public class QuizActivity extends AppCompatActivity {
       InvocationTargetException,
       InstantiationException {
     // get the parent view group that we will add controls to
-    ViewGroup viewGroup = (ViewGroup) question.getParentType().getConstructor(Context.class).newInstance(this);
-    // get and set the layout params for the parent view group
-    viewGroup.setLayoutParams(getMatchParentLayoutParams());
-    // set the layout to Vertical
-    ((LinearLayout) viewGroup).setOrientation(LinearLayout.VERTICAL);
-
+    ViewGroup viewGroup = createParent(question);
+    // set any decorations on the TextView that displays the Question text
     setQuestionBox(question);
 
-    // loop through all the choices in the array
+    // loop through all the choices for this question
     for (Question.Choice choice : question.getChoices()) {
       // create a control of the appropriate type; RadioButton, CheckBox and EditText are all TextView types
-      TextView control = (TextView) question.getControlType().getConstructor(Context.class).newInstance(this);
+      TextView control = createChild(question);
       // set the text; for Short Answer questions, this will be the empty string
       if (control instanceof EditText) {
         // apply formatting and decorations to EditText
@@ -326,8 +363,6 @@ public class QuizActivity extends AppCompatActivity {
       // disable the control if question was already answered
       control.setEnabled(!question.isAnswered());
     }
-    // set the main question text
-    mQuestionText.setText(question.getQuestionText());
     // remove any previous Views from the scroll view
     mScrollView.removeAllViews();
     // add newly composited viewGroup to the ScrollView
@@ -394,6 +429,8 @@ public class QuizActivity extends AppCompatActivity {
       }
       else mQuestionText.setBackgroundResource(R.drawable.red_box);
     }
+    // set the main question text
+    mQuestionText.setText(question.getQuestionText());
   }
 
   @Override
