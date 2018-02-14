@@ -1,4 +1,4 @@
-package cloud.workingtitle.dynamicquiz;
+package cloud.workingtitle.qwizzler;
 
 import org.junit.Test;
 

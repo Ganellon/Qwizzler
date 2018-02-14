@@ -1,4 +1,4 @@
-package cloud.workingtitle.dynamicquiz;
+package cloud.workingtitle.qwizzler;
 
 /**
  * Created by drew on 2/11/18.
@@ -27,7 +27,7 @@ class ShortAnswer extends Question {
     this.mProvidedAnswer = textAnswer;
   }
 
-  public String getProvidedAnswer(){
+  public String getProvidedAnswer() {
     return mProvidedAnswer;
   }
 

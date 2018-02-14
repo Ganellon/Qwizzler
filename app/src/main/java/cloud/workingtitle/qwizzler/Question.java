@@ -1,4 +1,4 @@
-package cloud.workingtitle.dynamicquiz;
+package cloud.workingtitle.qwizzler;
 
 import java.util.ArrayList;
 
@@ -7,7 +7,7 @@ import java.util.ArrayList;
  * Created by drew on 2/11/18.
  */
 
-public abstract class Question {
+abstract class Question {
 
   // Question can have several states, the least of which is basic question text
   // Question has at least one choice

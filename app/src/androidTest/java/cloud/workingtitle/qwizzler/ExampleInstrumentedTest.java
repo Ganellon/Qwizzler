@@ -1,4 +1,4 @@
-package cloud.workingtitle.dynamicquiz;
+package cloud.workingtitle.qwizzler;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;

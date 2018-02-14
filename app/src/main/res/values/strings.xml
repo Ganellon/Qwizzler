@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">DynamicQuiz</string>
+    <string name="app_name">Qwizzler</string>
     <string name="edit_text_hint">Enter your answer here</string>
     <string name="score_button_text">Get Your Score</string>
     <string name="check_answer_button_text">Check Answer</string>
