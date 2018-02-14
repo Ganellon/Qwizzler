@@ -13,8 +13,7 @@
         android:id="@+id/question"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:minLines="3"
-        android:textAppearance="@style/TextAppearance.AppCompat.Headline" />
+        android:textAppearance="@style/TextAppearance.AppCompat.Body2" />
 
     <ScrollView
         android:isScrollContainer="false"
@@ -32,13 +31,14 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="0dp"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent">
         <Button
+            android:minHeight="0dp"
             android:text="@string/score_button_text"
             android:id="@+id/get_score_button"
-            android:layout_margin="4dp"
+            android:layout_margin="0dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
         <LinearLayout
@@ -46,27 +46,29 @@
             android:layout_height="wrap_content">
 
             <Button
+                android:minHeight="0dp"
                 android:enabled="false"
                 android:id="@+id/hint_button"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="4dp"
+                android:layout_margin="0dp"
                 android:layout_weight="1"
                 android:text="@string/get_hint_button_text" />
 
             <Button
+                android:minHeight="0dp"
                 android:enabled="false"
                 android:id="@+id/check_answer_button"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="4dp"
+                android:layout_margin="0dp"
                 android:layout_weight="1"
                 android:text="@string/check_answer_button_text" />
 
         </LinearLayout>
 
         <LinearLayout
-
+            android:visibility="gone"
             android:id="@+id/prev_next_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

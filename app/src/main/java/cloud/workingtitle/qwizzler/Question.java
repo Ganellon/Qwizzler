@@ -1,5 +1,9 @@
 package cloud.workingtitle.qwizzler;
 
+import android.location.Address;
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.util.ArrayList;
 
 
@@ -7,7 +11,7 @@ import java.util.ArrayList;
  * Created by drew on 2/11/18.
  */
 
-abstract class Question {
+abstract class Question implements Parcelable {
 
   // Question can have several states, the least of which is basic question text
   // Question has at least one choice
@@ -28,10 +32,29 @@ abstract class Question {
   private boolean mAnsweredCorrectly;
 
 
+  Question (Parcel in) {
+    mQuestionText = in.readString();
+    mChoices = in.createTypedArrayList(Choice.CREATOR);
+    mIsAnswered = in.readByte() != 0;
+    mAnsweredCorrectly = in.readByte() != 0;
+  }
+
   Question(String questionText) {
     mQuestionText = questionText;
     mIsAnswered = false;
   }
+
+  /*public static final Creator<Question> CREATOR = new Creator<Question>() {
+    @Override
+    public Question createFromParcel(Parcel in) {
+      return new Question(in);
+    }
+
+    @Override
+    public Question[] newArray(int size) {
+      return new Question[size];
+    }
+  };*/
 
   public void setAnsweredCorrectly(boolean answeredCorrectly) {
     mAnsweredCorrectly = answeredCorrectly;
@@ -79,7 +102,20 @@ abstract class Question {
     return mChoices;
   }
 
-  public class Choice {
+  @Override
+  public int describeContents() {
+    return 0;
+  }
+
+  @Override
+  public void writeToParcel(Parcel dest, int flags) {
+    dest.writeString(mQuestionText);
+    dest.writeTypedList(mChoices);
+    dest.writeByte((byte) (mIsAnswered ? 1 : 0));
+    dest.writeByte((byte) (mAnsweredCorrectly ? 1 : 0));
+  }
+
+  public static class Choice implements Parcelable{
     private String mChoiceText;
     private boolean mIsCorrect;
     private boolean mWasChosen;
@@ -88,6 +124,13 @@ abstract class Question {
       this.mChoiceText = choiceText;
       this.mIsCorrect = isCorrect;
     }
+
+    private Choice (Parcel in) {
+      mChoiceText = in.readString();
+      mIsCorrect = in.readByte() != 0;
+      mWasChosen = in.readByte() != 0;
+    }
+
 
     public void choose() {
       mWasChosen = true;
@@ -104,5 +147,41 @@ abstract class Question {
     public boolean isCorrect() {
       return mIsCorrect;
     }
+
+    public static final Creator<Choice> CREATOR = new Creator<Choice>() {
+      @Override
+      public Choice createFromParcel(Parcel in) {
+        return new Choice(in);
+      }
+
+      @Override
+      public Choice[] newArray(int size) {
+        return new Choice[size];
+      }
+    };
+
+    @Override
+    public int describeContents() {
+      return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+      dest.writeString(mChoiceText);
+      dest.writeByte((byte) (mIsCorrect ? 1 : 0));
+      dest.writeByte((byte) (mWasChosen ? 1 : 0));
+    }
+
+/*
+    // De-parcel object
+    private ContactInfo(Parcel in) {
+      name = in.readString();
+      surname = in.readString();
+      idx = in.readInt();
+
+      address = Address.CREATOR.createFromParcel(in);
+      }
+*/
+
   }
 }

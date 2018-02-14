@@ -1,5 +1,6 @@
 package cloud.workingtitle.qwizzler;
 
+import android.os.Parcel;
 import android.util.Log;
 
 /**
@@ -21,6 +22,10 @@ class TrueFalse extends Question {
     this.addChoice(isCorrect);
   }
 
+  protected TrueFalse (Parcel in) {
+    super(in);
+  }
+
   @Override
   public void addChoice(String choiceText, boolean isAnswer) throws IllegalStateException {
     Log.e(this.toString(), "Use the TrueFalse(String questionText, boolean answer) constructor instead");
@@ -37,4 +42,25 @@ class TrueFalse extends Question {
     return super.getControlType();
   }
 
+  @Override
+  public int describeContents() {
+    return 0;
+  }
+
+  @Override
+  public void writeToParcel(Parcel dest, int flags) {
+
+  }
+
+  public static final Creator<TrueFalse> CREATOR = new Creator<TrueFalse>() {
+    @Override
+    public TrueFalse createFromParcel(Parcel in) {
+      return new TrueFalse(in);
+    }
+
+    @Override
+    public TrueFalse[] newArray(int size) {
+      return new TrueFalse[size];
+    }
+  };
 }

@@ -1,10 +1,16 @@
 package cloud.workingtitle.qwizzler;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.view.GestureDetectorCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
+import android.view.GestureDetector;
 import android.view.Gravity;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -28,6 +34,8 @@ public class QuizActivity extends AppCompatActivity {
   // library of questions to ask
   private ArrayList<Question> quiz = new ArrayList<>();
 
+  // provides swipe support for forward / backward in the question list
+  private GestureDetectorCompat mDetector;
 
   // used for converting pixels to density independent pixels (dp)
   private float scale;
@@ -50,6 +58,7 @@ public class QuizActivity extends AppCompatActivity {
   public void onSaveInstanceState(Bundle savedInstanceState) {
     super.onSaveInstanceState(savedInstanceState);
     savedInstanceState.putInt("CurrentQuestion", mCurrentQuestion);
+    savedInstanceState.putParcelableArrayList("quiz", quiz);
   }
 
 
@@ -57,13 +66,16 @@ public class QuizActivity extends AppCompatActivity {
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_quiz);
+    mDetector = new GestureDetectorCompat(this, new CustomGestureListener());
 
+    loadControls();
     if (savedInstanceState != null) {
       mCurrentQuestion = savedInstanceState.getInt("CurrentQuestion", 0);
+      quiz = savedInstanceState.getParcelableArrayList("quiz");
     }
-
+    else createQuestions();
     scale = getResources().getDisplayMetrics().density;
-    loadControls();
+    updateDisplay();
 
     previous_button.setOnClickListener(new View.OnClickListener() {
       @Override
@@ -89,6 +101,7 @@ public class QuizActivity extends AppCompatActivity {
         updateDisplay();
       }
     });
+    
 
     get_score_button.setOnClickListener(new View.OnClickListener() {
       @Override
@@ -96,8 +109,10 @@ public class QuizActivity extends AppCompatActivity {
         getScore();
       }
     });
-    createQuestions();
-    updateDisplay();
+
+    if (this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+      showToast("<<  SWIPE LEFT OR RIGHT FOR MORE QUESTIONS  >>");
+    }
   }
 
   private void getScore() {
@@ -176,7 +191,7 @@ public class QuizActivity extends AppCompatActivity {
   }
 
   private void showToast(String message) {
-    Toast toast = Toast.makeText(this, message, Toast.LENGTH_LONG);
+    Toast toast = Toast.makeText(this, message, Toast.LENGTH_SHORT);
     toast.setGravity(Gravity.CENTER, 0, 0);
     toast.show();
   }
@@ -291,17 +306,7 @@ public class QuizActivity extends AppCompatActivity {
     // set the layout to Vertical
     ((LinearLayout) viewGroup).setOrientation(LinearLayout.VERTICAL);
 
-    // shuffle the order of the choices so they appear in random order each time they are newly displayed
-    if (!question.isAnswered()) {
-      mQuestionText.setBackgroundResource(0);
-      Collections.shuffle(question.getChoices());
-    }
-    else {
-      if (question.getAnsweredCorrectly()) {
-        mQuestionText.setBackgroundResource(R.drawable.green_box);
-      }
-      else mQuestionText.setBackgroundResource(R.drawable.red_box);
-    }
+    setQuestionBox(question);
 
     // loop through all the choices in the array
     for (Question.Choice choice : question.getChoices()) {
@@ -309,39 +314,17 @@ public class QuizActivity extends AppCompatActivity {
       TextView control = (TextView) question.getControlType().getConstructor(Context.class).newInstance(this);
       // set the text; for Short Answer questions, this will be the empty string
       if (control instanceof EditText) {
-        control.setHint("Answer Here");
-        if (question.isAnswered()) {
-          control.setText(((ShortAnswer) question).getProvidedAnswer());
-          if (question.getAnsweredCorrectly()) {
-            control.setBackgroundResource(R.drawable.green_box);
-          } else {
-            control.setBackgroundResource(R.drawable.red_box);
-          }
-        }
-        // ((TextInputLayout)viewGroup).setHint("Answer Here"); Material compatibility issue
-      } else {
-        control.setText(choice.getText());
-        // set the margins and padding for the control
-        control.setLayoutParams(getMargins());
-        control.setPadding(getDP(16), 0, 0, 0);
-        ((CompoundButton)control).setChecked(choice.wasPreviouslyChosen());
-        // decorate the control
-        if (question.isAnswered()) {
-          if (choice.wasPreviouslyChosen() && choice.isCorrect()) {
-            control.setBackgroundResource(R.drawable.green_box);
-          }
-          else if (!choice.wasPreviouslyChosen() && choice.isCorrect()) {
-            control.setBackgroundResource(R.drawable.green_box);
-          }
-          else if (choice.wasPreviouslyChosen() && !choice.isCorrect()) {
-            control.setBackgroundResource(R.drawable.red_box);
-          }
-        }
+        // apply formatting and decorations to EditText
+        control = setEditText(control, question);
       }
-      // add it to the parent view group
+      else {
+        // apply formatting and decoration to CheckBox / RadioButton
+        control = setCompoundButton(control, question, choice);
+      }
+      // add control to the parent view group
       viewGroup.addView(control);
+      // disable the control if question was already answered
       control.setEnabled(!question.isAnswered());
-      //control.setBackgroundResource(R.drawable.green_box);
     }
     // set the main question text
     mQuestionText.setText(question.getQuestionText());
@@ -351,6 +334,40 @@ public class QuizActivity extends AppCompatActivity {
     mScrollView.addView(viewGroup);
     // move the scroll bar back to the top
     mScrollView.setScrollY(0);
+  }
+
+  private TextView setCompoundButton(TextView control, Question question, Question.Choice choice) {
+    control.setText(choice.getText());
+    // set the margins and padding for the control
+    control.setLayoutParams(getMargins());
+    control.setPadding(getDP(16), 0, 0, 0);
+    ((CompoundButton)control).setChecked(choice.wasPreviouslyChosen());
+    // decorate the control
+    if (question.isAnswered()) {
+      if (choice.wasPreviouslyChosen() && choice.isCorrect()) {
+        control.setBackgroundResource(R.drawable.green_box);
+      }
+      else if (!choice.wasPreviouslyChosen() && choice.isCorrect()) {
+        control.setBackgroundResource(R.drawable.green_box);
+      }
+      else if (choice.wasPreviouslyChosen() && !choice.isCorrect()) {
+        control.setBackgroundResource(R.drawable.red_box);
+      }
+    }
+    return control;
+  }
+
+  private TextView setEditText(TextView control, Question question) {
+    control.setHint("Type Answer Here");
+    if (question.isAnswered()) {
+      control.setText(((ShortAnswer)question).getProvidedAnswer());
+      if (question.getAnsweredCorrectly()) {
+        control.setBackgroundResource(R.drawable.green_box);
+      } else {
+        control.setBackgroundResource(R.drawable.red_box);
+      }
+    }
+    return control;
   }
 
   @NonNull
@@ -365,4 +382,37 @@ public class QuizActivity extends AppCompatActivity {
     return layoutParams;
   }
 
+  private void setQuestionBox(Question question) {
+    // shuffle the order of the choices so they appear in random order each time they are newly displayed
+    if (!question.isAnswered()) {
+      mQuestionText.setBackgroundResource(0);
+      Collections.shuffle(question.getChoices());
+    }
+    else {
+      if (question.getAnsweredCorrectly()) {
+        mQuestionText.setBackgroundResource(R.drawable.green_box);
+      }
+      else mQuestionText.setBackgroundResource(R.drawable.red_box);
+    }
+  }
+
+  @Override
+  public boolean onTouchEvent(MotionEvent event){
+    this.mDetector.onTouchEvent(event);
+    return super.onTouchEvent(event);
+  }
+
+  class CustomGestureListener extends GestureDetector.SimpleOnGestureListener {
+
+    @Override
+    public boolean onFling(MotionEvent event1, MotionEvent event2,
+                           float velocityX, float velocityY) {
+      if (event1.getX() < event2.getX() - 100) previous_button.callOnClick();
+      else next_button.callOnClick();
+      //Log.d("Swipe", swipeDirection);
+      //Log.d("Swipe", "Event1 X " + String.valueOf(event1.getX()) + " | Event2 X " + String.valueOf(event2.getX()));
+      //Log.d(DEBUG_TAG, "onFling: " + event1.toString() + event2.toString());
+      return true;
+    }
+  }
 }
