@@ -1,7 +1,6 @@
 package cloud.workingtitle.qwizzler;
 
 import android.content.Context;
-import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.view.GestureDetectorCompat;
@@ -60,7 +59,6 @@ public class QuizActivity extends AppCompatActivity {
     savedInstanceState.putParcelableArrayList("quiz", quiz);
   }
 
-
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -101,7 +99,6 @@ public class QuizActivity extends AppCompatActivity {
       }
     });
 
-
     get_score_button.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View v) {
@@ -109,9 +106,10 @@ public class QuizActivity extends AppCompatActivity {
       }
     });
 
-    if (this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
-      showToast("<<  SWIPE LEFT OR RIGHT FOR MORE QUESTIONS  >>");
-    }
+    // Not sure if I like this... it's kind of obnoxious
+    //if (this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+    //  showToast("<<  SWIPE LEFT OR RIGHT FOR MORE QUESTIONS  >>");
+    //}
   }
 
   private void getScore() {
@@ -216,23 +214,23 @@ public class QuizActivity extends AppCompatActivity {
   }
 
   private void updateDisplay() {
+    String appName = getString(R.string.app_name);
     Question q = null;
     if (quiz.size() > 0) {
       q = quiz.get(mCurrentQuestion);
-      setTitle(String.format(Locale.US, "Question %d of %d", mCurrentQuestion + 1, quiz.size()));
+      setTitle(String.format(Locale.US, appName + " -- Question %d of %d", mCurrentQuestion + 1, quiz.size()));
     }
     askQuestions(q);
     updateControls();
 
   }
 
+  // this is a fail-safe method to cope with swiping
   private int previousQuestion() {
-    // really, this should never happen since the button should be disabled
     return mCurrentQuestion > 0 ? --mCurrentQuestion : mCurrentQuestion;
   }
-
+  // this is a fail-safe method to cope with swiping
   private int nextQuestion() {
-    // really, this should never happen since the button should be disabled
     return mCurrentQuestion < quiz.size() - 1 ? ++mCurrentQuestion : mCurrentQuestion;
   }
 
