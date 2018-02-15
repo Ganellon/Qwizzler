@@ -250,39 +250,7 @@ public class QuizActivity extends AppCompatActivity {
   }
 
   private void createQuestions() {
-    Question question = new SelectOne("What is your favorite color?");
-    question.addChoice("Blue", true);
-    question.addChoice("Green");
-    question.addChoice("Yellow");
-    question.addChoice("Red");
-    question.addChoice("Fart Smell");
-    question.addChoice("Bronze");
-    question.addChoice("Orange");
-    question.addChoice("Blisters");
-    question.addChoice("Gold");
-    question.addChoice("Purple");
-    question.addChoice("Magenta");
-    question.addChoice("Mind your own business");
-    quiz.add(question);
-    question = new SelectMany("Which of the following have 30 days?");
-    question.addChoice("September", true);
-    question.addChoice("April", true);
-    question.addChoice("June", true);
-    question.addChoice("November", true);
-    question.addChoice("January");
-    question.addChoice("February");
-    question.addChoice("March");
-    question.addChoice("May");
-    question.addChoice("July");
-    question.addChoice("August");
-    question.addChoice("October");
-    question.addChoice("December");
-    quiz.add(question);
-    question = new TrueFalse("Springfield is the capital of Maine.", false);
-    quiz.add(question);
-    question = new ShortAnswer("What is your name?");
-    question.addChoice("Andrew", true);
-    quiz.add(question);
+
   }
 
   // converts a DP setting into the nearest pixel equivalent for each device

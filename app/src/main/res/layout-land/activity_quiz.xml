@@ -39,7 +39,7 @@
         <Button
             style="?android:attr/buttonBarButtonStyle"
             android:layout_weight="0"
-            android:drawableStart="@drawable/ic_back_24dp"
+            android:text="@string/previous_icon"
             android:enabled="false"
             android:id="@+id/previous_button"
             android:minWidth="0dp"
@@ -76,7 +76,7 @@
         <Button
             style="?android:attr/buttonBarButtonStyle"
             android:layout_weight="0"
-            android:drawableStart="@drawable/ic_forward_24dp"
+            android:text="@string/next_icon"
             android:minWidth="0dp"
             android:enabled="false"
             android:id="@+id/next_button"

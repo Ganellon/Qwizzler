@@ -6,4 +6,6 @@
     <string name="get_hint_button_text">Get Hint</string>
     <string name="previous_button_text">Previous</string>
     <string name="next_button_text">Next</string>
+    <string name="previous_icon">&lt;&lt;</string>
+    <string name="next_icon">>></string>
 </resources>
