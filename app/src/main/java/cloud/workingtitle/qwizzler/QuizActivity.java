@@ -1,3 +1,11 @@
+/*
+ * Qwizzler
+ * QuizActivity.java
+ * Created by Andrew Epstein
+ * Copyright (c) 2018. All rights reserved.
+ * Last modified : 2/15/18 5:08 PM
+ */
+
 package cloud.workingtitle.qwizzler;
 
 import android.content.Context;
@@ -51,6 +59,14 @@ public class QuizActivity extends AppCompatActivity {
   private Button next_button;
   private Button get_score_button;
 
+
+  /**
+   * This method is called during the app lifecycle (e.g. screen rotations)
+   * it adds the currentQuestion and quiz globals to the bundle.
+   * The parcelable array comes from the Parcelable interface of the Question class
+   *
+   * @param savedInstanceState
+   */
   @Override
   public void onSaveInstanceState(Bundle savedInstanceState) {
     super.onSaveInstanceState(savedInstanceState);
@@ -58,42 +74,66 @@ public class QuizActivity extends AppCompatActivity {
     savedInstanceState.putParcelableArrayList("quiz", quiz);
   }
 
+
+  /**
+   * This is the Activity's entry point. It's called at startup and during the app lifecycle.
+   * Initialization methods are called from here, including wiring the visual elements to listeners
+   *
+   * @param savedInstanceState
+   */
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_quiz);
+
+    // initialize the mDectector global to an instance of itself
     mDetector = new GestureDetectorCompat(this, new CustomGestureListener());
 
+    // create global references to static on-screen elements (buttons, display box, etc.)
     loadControls();
+
+    // if there is data in savedInstanceState, unbundle it and apply it to the appropriate globals
     if (savedInstanceState != null) {
       mCurrentQuestion = savedInstanceState.getInt("CurrentQuestion", 0);
       quiz = savedInstanceState.getParcelableArrayList("quiz");
     }
-    else createQuestions();
+    else createQuestions(); // otherwise, create a new batch of questions from code
+
+    // units in dynamic app are in pixels. This changes the scale depending on the device.
     scale = getResources().getDisplayMetrics().density;
+
+    // initiate the creation cycle of any screen elements
     updateDisplay();
 
+    // wire the Previous button onCLick event to a method
     previous_button.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View v) {
+        // get the previous Question from the storehouse
         mCurrentQuestion = previousQuestion();
+        // display it
         updateDisplay();
       }
     });
 
+    // wire the Next button onClick event to a method
     next_button.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View v) {
-        //recordChoices(mCurrentQuestion);
+        // get the next question from the quiz storehouse
         mCurrentQuestion = nextQuestion();
+        // display it
         updateDisplay();
       }
     });
 
+    // wire the Check Answer button onClick event to a method
     check_answer_button.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View v) {
+        // initiate the check answer method
         checkAnswer();
+        // update the display after the answer has been evaluated
         updateDisplay();
       }
     });

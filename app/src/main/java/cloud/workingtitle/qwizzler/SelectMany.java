@@ -1,12 +1,16 @@
+
+/*
+ * Qwizzler
+ * SelectMany.java
+ * Created by Andrew Epstein
+ * Copyright (c) 2018. All rights reserved.
+ * Last modified : 2/14/18 6:24 PM
+ */
+
 package cloud.workingtitle.qwizzler;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-
-/**
- * Created by drew on 2/11/18.
- * This is a SelectMany (checkbox) type
- */
 
 class SelectMany extends Question implements Parcelable{
 

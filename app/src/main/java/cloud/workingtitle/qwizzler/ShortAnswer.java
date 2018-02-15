@@ -1,11 +1,15 @@
+
+/*
+ * Qwizzler
+ * ShortAnswer.java
+ * Created by Andrew Epstein
+ * Copyright (c) 2018. All rights reserved.
+ * Last modified : 2/15/18 5:08 PM
+ */
+
 package cloud.workingtitle.qwizzler;
 
 import android.os.Parcel;
-
-/**
- * Created by drew on 2/11/18.
- * This is a ShortAnswer type
- */
 
 class ShortAnswer extends Question {
 
@@ -15,6 +19,7 @@ class ShortAnswer extends Question {
     super(in);
     mProvidedAnswer = in.readString();
   }
+
 
   ShortAnswer(String questionText) {
     super(questionText);

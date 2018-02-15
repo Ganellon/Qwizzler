@@ -1,3 +1,11 @@
+/*
+ * Qwizzler
+ * Question.java
+ * Created by Andrew Epstein
+ * Copyright (c) 2018. All rights reserved.
+ * Last modified : 2/15/18 5:34 PM
+ */
+
 package cloud.workingtitle.qwizzler;
 
 import android.os.Parcel;

@@ -1,12 +1,16 @@
+
+/*
+ * Qwizzler
+ * TrueFalse.java
+ * Created by Andrew Epstein
+ * Copyright (c) 2018. All rights reserved.
+ * Last modified : 2/14/18 6:24 PM
+ */
+
 package cloud.workingtitle.qwizzler;
 
 import android.os.Parcel;
 import android.util.Log;
-
-/**
- * Created by drew on 2/11/18.
- * This is a TrueFalse type
- */
 
 class TrueFalse extends Question {
 

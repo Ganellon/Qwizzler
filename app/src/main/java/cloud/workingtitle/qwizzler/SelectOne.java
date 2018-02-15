@@ -1,12 +1,17 @@
+
+/*
+ * Qwizzler
+ * SelectOne.java
+ * Created by Andrew Epstein
+ * Copyright (c) 2018. All rights reserved.
+ * Last modified : 2/14/18 6:24 PM
+ */
+
 package cloud.workingtitle.qwizzler;
 
 import android.os.Parcel;
 import android.os.Parcelable;
 
-/**
- * Created by drew on 2/6/18.
- * This is Select One (radio button) type
- */
 
 class SelectOne extends Question implements Parcelable{
 
