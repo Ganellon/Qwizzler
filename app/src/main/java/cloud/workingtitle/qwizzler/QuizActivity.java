@@ -38,7 +38,6 @@ public class QuizActivity extends AppCompatActivity {
   // used for converting pixels to density independent pixels (dp)
   private float scale;
 
-
   // visual controls
   // mScrollView is the main "stage" where all question choices will appear
   private ScrollView mScrollView;
@@ -250,7 +249,36 @@ public class QuizActivity extends AppCompatActivity {
   }
 
   private void createQuestions() {
-
+    Question question = new TrueFalse("Trenton is the capital of New Jersey.");
+    quiz.add(question);
+    question = new TrueFalse("New York City is the capital of New York State", false);
+    quiz.add(question);
+    question = new ShortAnswer("What is the name of this app?");
+    question.addChoice("Qwizzler");
+    quiz.add(question);
+    question = new SelectOne("What is the capital of California?");
+    question.addChoice("Las Angeles");
+    question.addChoice("San Diego");
+    question.addChoice("San Francisco");
+    question.addChoice("Santa Cruz");
+    question.addChoice("Santa Barbara");
+    question.addChoice("Venice Beach");
+    question.addChoice("Sacramento", true);
+    quiz.add(question);
+    question = new SelectMany("Which months in the year have 30 days?");
+    question.addChoice("January");
+    question.addChoice("February");
+    question.addChoice("March");
+    question.addChoice("April", true);
+    question.addChoice("May");
+    question.addChoice("June", true);
+    question.addChoice("July");
+    question.addChoice("August");
+    question.addChoice("September", true);
+    question.addChoice("October");
+    question.addChoice("November", true);
+    question.addChoice("December");
+    quiz.add(question);
   }
 
   // converts a DP setting into the nearest pixel equivalent for each device
