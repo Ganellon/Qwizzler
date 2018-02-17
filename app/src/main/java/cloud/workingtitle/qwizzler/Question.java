@@ -21,12 +21,14 @@ import java.util.ArrayList;
 abstract class Question implements Parcelable {
 
   // TODO - add a Question factory to deal with invalid constructors / empty strings
+  //      TODO?: Can a factory method deal with app lifecycle?? How??!
   // TODO - add a state machine to validate questions before they are entered in the quiz
   /*
   state - initial -- question has questionText
-  state - correctChoiceAdded -- at least one correct choice was added
-  state - final -- question added to the quiz, no more modifications
+  state - ready -- at least one correct choice was added
+  state - closed -- question added to the quiz, no more modifications
    */
+
 
   // these decide what kind of controls to draw
   private Class mControlType;
@@ -52,6 +54,7 @@ abstract class Question implements Parcelable {
     mChoices = in.createTypedArrayList(Choice.CREATOR);
     mIsAnswered = in.readByte() != 0;
     mAnsweredCorrectly = in.readByte() != 0;
+
   }
 
   /**

@@ -12,7 +12,7 @@ package cloud.workingtitle.qwizzler;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-class SelectMany extends Question implements Parcelable{
+class SelectMany extends Question implements Parcelable {
 
   SelectMany(String questionText) {
     super(questionText);

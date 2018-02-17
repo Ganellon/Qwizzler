@@ -21,7 +21,6 @@ class SelectOne extends Question implements Parcelable{
     setParentType(android.widget.RadioGroup.class);
   }
 
-
   private SelectOne(Parcel in) {
     super(in);
   }
