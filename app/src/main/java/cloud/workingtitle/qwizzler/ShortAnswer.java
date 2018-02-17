@@ -10,6 +10,7 @@
 package cloud.workingtitle.qwizzler;
 
 import android.os.Parcel;
+import android.util.Log;
 
 class ShortAnswer extends Question {
 
@@ -31,7 +32,20 @@ class ShortAnswer extends Question {
 
   @Override
   public void addChoice(String choiceText) {
-    super.addChoice(choiceText, true);
+    if (getChoices().size() == 0)
+      super.addChoice(choiceText, true);
+    else Log.e("ShortAnswer", "Attempt to add choice when choice already set");
+  }
+
+  @Override
+  public void addChoice(String choiceText, boolean isCorrect) {
+    if (getChoices().size() == 0) {
+      if (isCorrect) {
+        this.addChoice(choiceText);
+      }
+      else Log.e("ShortAnswer", "False not allowed for Short Answer choice");
+    }
+    else Log.e("ShortAnswer", "Attempt to add choice when choice already set");
   }
 
   void setAnsweredCorrectly(boolean answeredCorrectly, String textAnswer) {

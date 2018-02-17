@@ -32,9 +32,8 @@ class TrueFalse extends Question {
   }
 
   @Override
-  public void addChoice(String choiceText, boolean isAnswer) throws IllegalStateException {
-    Log.e(this.toString(), "Use the TrueFalse(String questionText, boolean answer) constructor instead");
-    throw new IllegalStateException("addChoice is not supported for TrueFalse questions");
+  public void addChoice(String choiceText, boolean isAnswer) {
+    Log.e("TrueFalse", "addChoice method not allowed. Use the TrueFalse(String questionText, boolean answer) constructor instead");
   }
 
   private void addChoice(boolean isCorrect) {

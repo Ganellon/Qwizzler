@@ -18,13 +18,15 @@ import java.util.ArrayList;
  * Created by drew on 2/11/18.
  * This is the abstract Question class from which all concrete questions are derived
  */
-
 abstract class Question implements Parcelable {
 
-  // Question can have several states, the least of which is basic question text
-  // Question has at least one choice
-  // Question has at least one correct choice
-  // For SelectOne and
+  // TODO - add a Question factory to deal with invalid constructors / empty strings
+  // TODO - add a state machine to validate questions before they are entered in the quiz
+  /*
+  state - initial -- question has questionText
+  state - correctChoiceAdded -- at least one correct choice was added
+  state - final -- question added to the quiz, no more modifications
+   */
 
   // these decide what kind of controls to draw
   private Class mControlType;
@@ -36,10 +38,15 @@ abstract class Question implements Parcelable {
   // the list of possible answers to the question
   private ArrayList<Choice> mChoices = new ArrayList<>();
 
+  // true once a question has been answered at all
   private boolean mIsAnswered;
+  // true if a question was answered correctly
   private boolean mAnsweredCorrectly;
 
-
+  /**
+   * Constructor that accepts a Parcel, called during screen rotation / app lifecycle events
+   * @param in the Parcel that was stored in the storedInstanceState bundle
+   */
   Question (Parcel in) {
     mQuestionText = in.readString();
     mChoices = in.createTypedArrayList(Choice.CREATOR);
@@ -47,74 +54,123 @@ abstract class Question implements Parcelable {
     mAnsweredCorrectly = in.readByte() != 0;
   }
 
+  /**
+   * basic constructor required for every subclass
+   * @param questionText the text of the question being asked
+   */
   Question(String questionText) {
     mQuestionText = questionText;
     mIsAnswered = false;
   }
 
-  /*public static final Creator<Question> CREATOR = new Creator<Question>() {
-    @Override
-    public Question createFromParcel(Parcel in) {
-      return new Question(in);
-    }
-
-    @Override
-    public Question[] newArray(int size) {
-      return new Question[size];
-    }
-  };*/
-
+  /**
+   * setter
+   * @param answeredCorrectly indicates whether to set the condition true or false
+   */
   void setAnsweredCorrectly(boolean answeredCorrectly) {
     mAnsweredCorrectly = answeredCorrectly;
     mIsAnswered = true;
   }
 
+  /**
+   * getter
+   * @return whether the question was answered correctly
+   */
   boolean getAnsweredCorrectly() {
     return mAnsweredCorrectly;
   }
 
+  /**
+   * getter
+   * @return whether or not the question was answered already
+   */
   boolean isAnswered() {
     return mIsAnswered;
   }
 
+  /**
+   * getter
+   * @return the class of the child control to display for each Choice
+   */
   Class getControlType() {
     return this.mControlType;
   }
 
+  /**
+   * getter
+   * @return the class of the Parent layout to create to hold child controls
+   */
   Class getParentType() {
     return this.mParentType;
   }
 
+  /**
+   * setter - called by each subclass
+   * @param controlType - the class of the child control to display for each Choice
+   */
   void setControlType(Class controlType) {
     mControlType = controlType;
   }
 
+  /**
+   * setter - called by each subclass
+   * @param parentType - the class of the parent control to display for each Choice
+   */
   void setParentType(Class parentType) {
     mParentType = parentType;
   }
 
+  /**
+   * getter - the text of the question being asked
+   * @return the text of the question being displayed
+   */
   String getQuestionText() {
     return mQuestionText;
   }
 
+  /**
+   * OVERLOAD
+   * add a new Choice object to the collection for this Question
+   * @param choiceText - the text of the choice
+   * silently calls the addChoice(String, boolean) constructor with a default false value
+   */
   public void addChoice(String choiceText) {
     this.addChoice(choiceText, false);
   }
 
+  /**
+   * add a new Choice object to the collection for this Question
+   * @param choiceText - the Text of the choice
+   * @param isCorrect - indicates whether this choice is Correct to satisfy the Question
+   */
   public void addChoice(String choiceText, boolean isCorrect) {
+    // TODO: validate choice before calling Choice constructor
     Choice choice = new Choice(choiceText, isCorrect);
     mChoices.add(choice);
   }
 
+  /**
+   * getter - the arraylist of choices for this question
+   * @return - the arraylist of choices for this question
+   */
   ArrayList<Choice> getChoices() {
     return mChoices;
   }
 
+  /**
+   * required by Parcelable interface
+   * @return 0
+   */
   @Override
   public int describeContents() {
     return 0;
   }
 
+  /**
+   * writes the contents of this question to a Parcel for screen rotation / app lifecycle
+   * @param dest the destination parcel for this serialized Question
+   * @param flags flags
+   */
   @Override
   public void writeToParcel(Parcel dest, int flags) {
     dest.writeString(mQuestionText);
@@ -123,39 +179,45 @@ abstract class Question implements Parcelable {
     dest.writeByte((byte) (mAnsweredCorrectly ? 1 : 0));
   }
 
-  public static class Choice implements Parcelable{
+  /**
+   * Choice inner class
+   * Each Question contains at least one Choice
+   * Choices are displayed as checkboxes or RadioButtons in the QuizActivity
+   */
+  public static class Choice implements Parcelable {
+
+    // the text to display for this choice
     private String mChoiceText;
+    // whether this choice satisfies the Question
     private boolean mIsCorrect;
+    // indicates whether this Choice was selected by the user when CheckAnswer was pressed
+    // and used to preserve / display historical answers
     private boolean mWasChosen;
 
+    /**
+     * Constructor for Choice
+     * @param choiceText The text to display / store for this choice
+     * @param isCorrect - indicates whether this choice is correct for the Question
+     */
     private Choice(String choiceText, boolean isCorrect) {
       this.mChoiceText = choiceText;
       this.mIsCorrect = isCorrect;
     }
 
+    /**
+     * OVERLOAD
+     * Constructor for Choice class, inflater for previously Parceled Choices
+     * @param in the Parcel stored in savedInstanceState Bundle
+     */
     private Choice (Parcel in) {
       mChoiceText = in.readString();
       mIsCorrect = in.readByte() != 0;
       mWasChosen = in.readByte() != 0;
     }
 
-
-    void choose() {
-      mWasChosen = true;
-    }
-
-    boolean wasPreviouslyChosen() {
-      return mWasChosen;
-    }
-
-    public String getText() {
-      return mChoiceText;
-    }
-
-    boolean isCorrect() {
-      return mIsCorrect;
-    }
-
+    /**
+     * Required for inner class of Parcelable class
+     */
     static final Creator<Choice> CREATOR = new Creator<Choice>() {
       @Override
       public Choice createFromParcel(Parcel in) {
@@ -168,11 +230,17 @@ abstract class Question implements Parcelable {
       }
     };
 
+    // required by Parcelable interface
     @Override
     public int describeContents() {
       return 0;
     }
 
+    /**
+     * Writes the content of this Choice into a Parcel
+     * @param dest the destination Parcel
+     * @param flags flags
+     */
     @Override
     public void writeToParcel(Parcel dest, int flags) {
       dest.writeString(mChoiceText);
@@ -180,5 +248,36 @@ abstract class Question implements Parcelable {
       dest.writeByte((byte) (mWasChosen ? 1 : 0));
     }
 
+    /**
+     * setter
+     * Indicates that this Choice was selected by the user when the CheckAnswer button was pressed
+     */
+    void choose() {
+      mWasChosen = true;
+    }
+
+    /**
+     * getter
+     * @return returns whether this Choice was historically chosen for historical display
+     */
+    boolean wasPreviouslyChosen() {
+      return mWasChosen;
+    }
+
+    /**
+     * getter
+     * @return the text of this Choice which is displayed / stored for display
+     */
+    public String getText() {
+      return mChoiceText;
+    }
+
+    /**
+     * getter
+     * @return whether this Choice is correct for the Question; used for marking a question correct
+     */
+    boolean isCorrect() {
+      return mIsCorrect;
+    }
   }
 }
