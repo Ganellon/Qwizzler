@@ -114,7 +114,7 @@ public class QuizActivity extends AppCompatActivity {
       Quiz.setAll(temp);
     }
     else createQuestions(); // otherwise, create a new batch of questions from code*/
-    
+
     // units in dynamic app are in pixels. This changes the scale depending on the device.
     scale = getResources().getDisplayMetrics().density;
 
