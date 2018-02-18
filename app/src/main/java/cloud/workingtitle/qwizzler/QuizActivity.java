@@ -101,7 +101,7 @@ public class QuizActivity extends AppCompatActivity {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_quiz);
 
-    // initialize the mDectector global to an instance of itself
+    // initialize mDectector to an instance of itself
     mDetector = new GestureDetectorCompat(this, new CustomGestureListener());
 
     // create global references to static on-screen elements (buttons, display box, etc.)
