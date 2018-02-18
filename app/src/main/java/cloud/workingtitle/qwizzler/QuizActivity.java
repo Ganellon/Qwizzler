@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.view.GestureDetectorCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.GestureDetector;
 import android.view.Gravity;
 import android.view.MotionEvent;
@@ -70,11 +71,23 @@ public class QuizActivity extends AppCompatActivity {
    */
   @Override
   public void onSaveInstanceState(Bundle savedInstanceState) {
-    super.onSaveInstanceState(savedInstanceState);
     savedInstanceState.putInt("CurrentQuestion", mCurrentQuestion);
     savedInstanceState.putParcelableArrayList("quiz", Quiz.getAll());
+    super.onSaveInstanceState(savedInstanceState);
   }
 
+
+  /**
+   * Method to deal with final destruction / back button press. It's a terrible workaround
+   * for a problem I don't thoroughly understand.
+   */
+  @Override
+  public void onDestroy() {
+    if (isFinishing())
+      Quiz.destroy(); // if you can't free the data, at least clear it
+    super.onDestroy();
+    Log.e("DESTROY", "onDestroy called");
+  }
 
   /**
    * This is the Activity's entry point. It's called at startup and during the app lifecycle.
@@ -84,6 +97,7 @@ public class QuizActivity extends AppCompatActivity {
    */
   @Override
   protected void onCreate(Bundle savedInstanceState) {
+    Log.e("CREATE", "onCreate called: " + String.valueOf(savedInstanceState));
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_quiz);
 
@@ -99,9 +113,8 @@ public class QuizActivity extends AppCompatActivity {
       ArrayList<Question> temp = savedInstanceState.getParcelableArrayList("quiz");
       Quiz.setAll(temp);
     }
-
-    else createQuestions(); // otherwise, create a new batch of questions from code
-
+    else createQuestions(); // otherwise, create a new batch of questions from code*/
+    
     // units in dynamic app are in pixels. This changes the scale depending on the device.
     scale = getResources().getDisplayMetrics().density;
 

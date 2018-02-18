@@ -21,7 +21,7 @@ import java.util.ArrayList;
 abstract class Question implements Parcelable {
 
   // TODO - add a Question factory to deal with invalid constructors / empty strings
-  //      TODO?: Can a factory method deal with app lifecycle?? How??!
+  //      TODO?: Can a factory method deal with app lifecycle / Parcelable?
   // TODO - add a state machine to validate questions before they are entered in the quiz
   /*
   state - initial -- question has questionText
@@ -30,7 +30,7 @@ abstract class Question implements Parcelable {
    */
 
 
-  // these decide what kind of controls to draw
+  // these decide what kind of controls to draw for each subclass
   private Class mControlType;
   private Class mParentType;
 

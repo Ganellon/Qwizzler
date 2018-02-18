@@ -51,10 +51,6 @@ class TrueFalse extends Question {
     return 0;
   }
 
-  @Override
-  public void writeToParcel(Parcel dest, int flags) {
-
-  }
 
   public static final Creator<TrueFalse> CREATOR = new Creator<TrueFalse>() {
     @Override

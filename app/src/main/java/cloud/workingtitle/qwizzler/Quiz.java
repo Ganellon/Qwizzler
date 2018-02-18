@@ -24,6 +24,13 @@ abstract class Quiz {
     return true;
   }
 
+  /**
+   * this is a kludge; not sure how to deal with static data in the app lifecycle
+   */
+  static void destroy() {
+    mQuestions.clear();
+  }
+
   static Question get(int index) {
     return mQuestions.get(index);
   }

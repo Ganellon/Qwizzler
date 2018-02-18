@@ -14,16 +14,27 @@ import android.os.Parcelable;
 
 class SelectMany extends Question implements Parcelable {
 
+  /**
+   * Constructor
+   * @param questionText the text of the question to be displayed
+   */
   SelectMany(String questionText) {
     super(questionText);
     setControlType(android.widget.CheckBox.class);
     setParentType(android.widget.LinearLayout.class);
   }
 
+  /**
+   * Constructor for the Parcelable interface
+   * @param in the Parcel previously stored in instanceState Bundle
+   */
   private SelectMany(Parcel in) {
     super(in);
   }
 
+  /**
+   * Parcelable interface
+   */
   public static final Creator<SelectMany> CREATOR = new Creator<SelectMany>() {
     @Override
     public SelectMany createFromParcel(Parcel in) {
@@ -36,12 +47,13 @@ class SelectMany extends Question implements Parcelable {
     }
   };
 
+  /**
+   * Parcelable interface
+   * @return 0
+   */
   @Override
   public int describeContents() {
     return 0;
   }
 
-  @Override
-  public void writeToParcel(Parcel dest, int flags) {
-  }
 }
